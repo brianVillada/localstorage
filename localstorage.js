@@ -83,7 +83,7 @@ function mostrarDatos() {
             <td> ${p.observaciones}   </td>
             <td>
                 <span class="btn-warning btn-editar" title="Editar Pedido">  📝 </span>
-                <span class="btn-danger" btn-eliminar title="Eliminar Pedido">  ❌ </span>
+                <span onclick="borrarPedido(${i})" class="btn-danger" btn-eliminar title="Eliminar Pedido">  ❌ </span>
             </td>
         `;
         tabla.appendChild(fila);
@@ -91,6 +91,29 @@ function mostrarDatos() {
 
 
 }
+
+
+function borrarPedido(p){
+    let pedidos = [];
+
+    let pedidosPrevios = JSON.parse(localStorage.getItem(listadoPedidos));
+    //console.log(`var: datos ${datos} tipo: ${typeof (datos)}`);
+    //console.log(`var previos: ${pedidosPrevios} tipo: ${typeof(pedidosPrevios)}`);
+    if (pedidosPrevios != null) {
+        pedidos = pedidosPrevios;
+    }
+
+    let confirmar = confirm(`¿Deseas eliminar el pedido de: ${pedidos[p].cliente} ?`);
+    if(confirmar){
+
+        let ped = pedidos.splice(p,1);
+
+        localStorage.setItem(listadoPedidos,JSON.stringify(pedidos));
+        borrarTabla();
+        mostrarDatos();
+        alert(`El pedido se ha eliminado`);
+    }
+};
 
 function borrarTabla(){
     let filas = d.querySelectorAll(".table > tbody > tr");
