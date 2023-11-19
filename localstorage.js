@@ -8,7 +8,7 @@ let imagenInput = d.querySelector(".imagen");
 let observacionesInput = d.querySelector(".observacion");
 let btnGuardar = d.querySelector(".btn-guardar");
 const listadoPedidos = "Pedidos";
-let tabla = d.querySelector(".table");  
+let tabla = d.querySelector(".table tbody");
 btnGuardar.addEventListener("click", () => {
 
     if (validarDatos() != null) {
@@ -56,7 +56,10 @@ function guardarDatos(datos) {
     }
     pedidos.push(datos);
     localStorage.setItem(listadoPedidos,JSON.stringify(pedidos));
+    borrarTabla();
+    mostrarDatos();
     alert("Dato guardado");
+
 }
 
 function mostrarDatos() {
@@ -68,9 +71,37 @@ function mostrarDatos() {
     if (pedidosPrevios != null) {
         pedidos = pedidosPrevios;
     }
+    //console.log(pedidos);
+    pedidos.forEach((p, i) => {
+        let fila = d.createElement("tr");
+        fila.innerHTML = `
+            <td> ${i+1} </td>
+            <td> ${p.cliente}   </td>
+            <td> ${p.producto}   </td>
+            <td> ${p.precio}   </td>
+            <td> <img src="${p.imagen}" width="50%">    </td>
+            <td> ${p.observaciones}   </td>
+            <td>
+                <span class="btn-warning btn-editar" title="Editar Pedido">  📝 </span>
+                <span class="btn-danger" btn-eliminar title="Eliminar Pedido">  ❌ </span>
+            </td>
+        `;
+        tabla.appendChild(fila);
+    });
 
 
-
-    console.log(pedidos);
 }
-mostrarDatos();
+
+function borrarTabla(){
+    let filas = d.querySelectorAll(".table > tbody > tr");
+    console.log(filas);
+    filas.forEach((f)=>{
+        f.remove();
+    });
+};
+
+d.addEventListener("DOMContentLoaded",function(){
+    borrarTabla();
+    mostrarDatos();
+
+})
