@@ -1,3 +1,12 @@
 div + p {
     color:red;
 }
+.buscar-barra{
+    display: flex;
+    margin: 10px;
+    justify-content:   space-evenly;
+}
+
+.buscar-barra .buscar-input{
+    width: 70%;
+}
