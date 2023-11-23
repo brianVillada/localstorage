@@ -9,6 +9,7 @@ let observacionesInput = d.querySelector(".observacion");
 let btnGuardar = d.querySelector(".btn-guardar");
 const listadoPedidos = "Pedidos";
 let tabla = d.querySelector(".table tbody");
+let tabla2 = d.querySelector(".table")
 btnGuardar.addEventListener("click", () => {
     if (validarDatos() != null) {
         guardarDatos(validarDatos());
@@ -85,9 +86,7 @@ function mostrarDatos() {
             </td>
         `;
         tabla.appendChild(fila);
-
     });
-
 }
 
 function borrarPedido(p) {
@@ -150,7 +149,7 @@ function actulizarPedido(pos) {
         pedidos[pos].precio = precioInput.value;
         pedidos[pos].observaciones = observacionesInput.value;
 
-        localStorage.setItem(listadoPedidos,JSON.stringify(pedidos));
+        localStorage.setItem(listadoPedidos, JSON.stringify(pedidos));
         alert("Se actualizó con exito");
         btnActualizar.classList.toggle("d-none");
         btnGuardar.classList.toggle("d-none");
@@ -162,12 +161,8 @@ function actulizarPedido(pos) {
         precioInput.value = "";
         imagenInput.value = "";
         observacionesInput.value = "";
-
-
-
     });
 }
-
 
 let buscarInput = d.querySelector(".buscar-input");
 let buscarButton = d.querySelector(".buscar-button");
@@ -184,28 +179,23 @@ buscarButton.addEventListener("click", function () {
     performSearch(searchTerm);
 });
 
-
 function performSearch(searchTerm) {
-
     let pedidos = JSON.parse(localStorage.getItem(listadoPedidos)) || [];
 
-
     let filteredPedidos = pedidos.filter((pedido) => {
-
         return (
             pedido.cliente.toLowerCase().includes(searchTerm.toLowerCase()) ||
             pedido.producto.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            pedido.observaciones.toLowerCase().includes(searchTerm.toLowerCase())
+            pedido.observaciones
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
         );
     });
-
 
     updateTable(filteredPedidos);
 }
 
-
 function updateTable(data) {
-
     borrarTabla();
 
     data.forEach((p, i) => {
@@ -226,30 +216,32 @@ function updateTable(data) {
     });
 }
 
-function exportarPDF() {
-    var element = document.querySelector('.table');
-
-    // Obtener todas las imágenes dentro del elemento
-    var images = element.querySelectorAll('img');
-    var loadedImagesCount = 0;
-
-    // Función que se ejecutará cuando una imagen esté cargada
-    function onImageLoad() {
-        loadedImagesCount++;
-
-        // Verificar si todas las imágenes están cargadas
-        if (loadedImagesCount === images.length) {
-            // Todas las imágenes están cargadas, ahora generamos el PDF
-            generatePDF(element);
-        }
-    }
-
-    // Agregar el evento load a cada imagen
-    images.forEach(function (img) {
-        img.addEventListener('load', onImageLoad);
+document.addEventListener("DOMContentLoaded", () => {
+    // Escuchamos el click del botón
+    const $boton = document.querySelector(".btnCrearPdf");
+    $boton.addEventListener("click", () => {
+        const $elementoParaConvertir = tabla2; // <-- Aquí puedes elegir cualquier elemento del DOM
+        console.log($elementoParaConvertir);
+        html2pdf() // Se invoca en el archivo adjunto 
+            .set({
+                margin: 1,
+                filename: 'pedidos.pdf',
+                image: {
+                    type: 'jpeg',
+                    quality: 0.98
+                },
+                html2canvas: {
+                    scale: 3,
+                    letterRendering: false,
+                },
+                jsPDF: {
+                    unit: "in",
+                    format: "a3",
+                    orientation: 'portrait' // landscape o portrait
+                }
+            })
+            .from($elementoParaConvertir)
+            .save()
+            .catch(err => console.log(err));
     });
-}
-
-
-
-
+});
